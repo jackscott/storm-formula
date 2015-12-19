@@ -1,0 +1,39 @@
+
+# storm.yaml
+
+# where nimbus and supervisors should store state data
+storm.local.dir: "{{ storm.real_home }}"
+
+# List of hosts in the zookeeper cluster
+storm.zookeeper.servers:
+    - "{{ config.zookeeper_servers }}"
+
+storm.zookeeper.port: {{ config.zookeeper_port }}
+
+# Timeout band-aids in testing
+topology.receiver.buffer.size: 2
+storm.zookeeper.connection.timeout: 300000
+storm.zookeeper.session.timeout: 300000
+storm.zookeeper.retry.times: 10
+storm.zookeeper.retry.interval: 1000
+storm.zookeeper.retry.intervalceiling.millis: 30000
+
+topology.acker.executors: 0
+topology.debug: {{ config.debug|default('true') }}
+
+# hostname of the nimbus node
+nimbus.host: "{{ config.nimbus_host }}"
+
+# List of hosts that are Storm DRPC servers (optional)
+#drpc.servers:
+#    - "localhost"
+
+supervisor.slots.ports: {{ config.supervisor_slots }}
+
+nimbus.childopts: '{{ jvm_options.base_options|default(" ") }} {{ jvm_options.gc_options|default(" ") }} {{ jvm_options.jmx_options|default(" ") }}'
+  
+supervisor.childops: '{{ jvm_options.base_options|default(" ") }} {{ jvm_options.gc_options|default(" ") }} {{ jvm_options.jmx_options|default(" ") }}'
+
+worker.childops:  '{{ jvm_options.worker_options|default(" ") }} {{ jvm_options.base_options|default(" ") }} {{ jvm_options.gc_options|default(" ") }} {{ jvm_options.jmx_options|default(" ") }}'
+  
+ui.childops: '{{ jvm_options.base_options|default(" ") }} {{ jvm_options.gc_options|default(" ") }} {{ jvm_options.jmx_options|default(" ") }}'
