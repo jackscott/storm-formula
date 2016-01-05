@@ -1,0 +1,36 @@
+{% load_yaml as rawmap %}
+
+zmq:
+  prefix: /usr/local
+  version: "4.1.3"
+  real_name: 'zeromq-%s'
+  alt_name: 'zeromq'
+  source_url: "http://download.zeromq.org/zeromq-%(version)s.tar.gz"
+  
+jzmq:
+  prefix: /usr/local
+  version: "3.1.0"
+  real_name: 'v%s'
+  alt_name: "jzmq"
+  source_url: "https://github.com/zeromq/jzmq/archive/v%(version)s.tar.gz"
+
+libsodium:
+
+  prefix: /usr/local
+  version: "1.0.7"
+  real_name: "libsodium-%s"
+  alt_name: "libsodium"
+  source_url: "https://download.libsodium.org/libsodium/releases/libsodium-%(version)s.tar.gz"
+    
+
+storm:
+  version: "0.10.0"
+  real_name: "storm-%s"
+  alt_name: "storm"
+  source_url: "https://github.com/apache/storm/archive/v%(version)s.tar.gz"
+  user_name: 'storm'
+  
+  prefix: /usr/local
+  conf_dir: /etc/storm
+  log_dir: /var/log/storm
+  

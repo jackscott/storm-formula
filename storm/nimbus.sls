@@ -1,11 +1,11 @@
-{% from 'storm/settings.sls' import storm with context %}
+{% from "storm/map.jinja" import storm with context %}
 
 include:
   - storm
 
 storm|nimbus_conf:
   file.managed:
-    - name: {{ storm.config_dir }}/storm.yaml
+    - name: {{ storm.conf_dir }}/storm.yaml
     - source: salt://storm/files/storm.yaml
     - user: {{ storm.user_name }}
     - group: {{ storm.user_name }}

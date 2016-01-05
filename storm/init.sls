@@ -1,4 +1,4 @@
-{% from 'storm/settings.sls' import storm,zmq with context %}
+{% from "storm/map.jinja" import storm, zmq with context %}
 
 include:
   - storm.zmq
@@ -15,7 +15,8 @@ storm|install_deps:
         - automake
         - autoconf
         - pkg-config
-
+        - maven
+        
 storm|build_dir:
   file.directory:
     - user: root
@@ -48,13 +49,14 @@ storm|create_directories:
         - {{ storm.real_home }}
         - {{ storm.log_dir }}
 
+
 storm|install_from_source:
   cmd.run:
-    - cwd: {{ storm.prefix }}
+    - cwd: {{ storm.real_home }}
     - name: curl -L '{{ storm.source_url }}' | tar xz
     - shell: /bin/bash
     - timeout: 300
-    - unless: test -x {{ storm.real_home }}/bin/storm
+    - unless: test -x {{ storm.real_name }}/bin/storm
     - require:
         - file: storm|create_directories
 
