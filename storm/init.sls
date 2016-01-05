@@ -2,8 +2,6 @@
 
 include:
   - storm.zmq
-  - maven
-  - maven.env
   
 storm|install_deps:
   pkg:
