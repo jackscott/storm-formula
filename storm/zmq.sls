@@ -9,7 +9,6 @@ storm|create_zmq_directories:
     - makedirs: true
     - names:
         - {{ zmq.prefix }}/{{ zmq.real_name }}
-        - {{ zmq.log_dir }}
         - {{ jzmq.prefix }}/{{ jzmq.real_name }}
         - {{ lsi.prefix  }}/{{ lsi.real_name }}
 
@@ -31,19 +30,20 @@ storm|download_zmq:
 
 storm|download_jzmq:
   cmd.run:
-    - name: curl -L {{ jzmq.source_url }}} | tar xz
+    - name: curl -L {{ jzmq.source_url }} | tar xz
     - cwd: {{ jzmq.prefix }}
     - unless: test -d {{ jzmq.real_home }}
     - require:
         - file: storm|build_dir
           
 storm|install_sodium:
-  cmd.run: 
-    - names:
-        - ./configure --prefix={{ lsi.prefix }}
-        - make
-        - make install
-    - cwd: {{ lsi.real_home }}
+  cmd.run:
+    - name: |
+        cd {{ lsi.real_home }}
+        ./configure --prefix={{ lsi.prefix }}
+        make
+        make install
+    - cwd: {{ lsi.prefix }}
     - shell: /bin/bash
     - timeout: 300
     - unless: test -x {{ lsi.prefix }}/lib/libsodium.so
@@ -52,12 +52,13 @@ storm|install_sodium:
           
 storm|install_zmq:
   cmd.run:
-    - names:
-        - ./autogen.sh
-        - ./configure
-        - make
-        - make install 
-    - cwd: {{ zmq.real_home }}
+    - name: |
+        cd {{ zmq.real_home }}
+        ./autogen.sh
+        ./configure
+        make
+        make install 
+    - cwd: {{ zmq.prefix }}
     - shell: /bin/bash
     - timeout: 300
     - unless: test -x {{ zmq.prefix }}/lib/libjzmq.so
@@ -66,12 +67,13 @@ storm|install_zmq:
           
 storm|install_jzmq:
   cmd.run:
-    - names:
-        - ./autogen.sh
-        - ./configure
-        - make
-        - make install
-    - cwd: {{ jzmq.real_home }}        
+    - name: |
+        cd {{ jzmq.real_home }}
+        ./autogen.sh
+        ./configure
+        make
+        make install
+    - cwd: {{ jzmq.prefix }}
     - shell: /bin/bash
     - timeout: 300
     - unless: test -x {{ jzmq.real_home }}/autogen.sh

@@ -1,4 +1,4 @@
-{% load_yaml as rawmap %}
+
 
 zmq:
   prefix: /usr/local
@@ -33,4 +33,5 @@ storm:
   prefix: /usr/local
   conf_dir: /etc/storm
   log_dir: /var/log/storm
-  
+  build_dir: /usr/local/src
+
