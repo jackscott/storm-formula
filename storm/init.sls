@@ -1,21 +1,20 @@
-{% from "storm/map.jinja" import storm, zmq with context %}
+{% from "storm/map.jinja" import storm, meta with context %}
 
-include:
-  - storm.zmq
-  
+{%- from "storm/defaults.yaml" import rawmap with context -%}
+{%- set config = salt['pillar.get']("storm:config", default=rawmap.config, merge=True) -%}
+
 storm|install_deps:
   pkg:
     - installed
     - pkgs:
         - unzip
         - libtool
-        - autoconf
-        - pkg-config
-        - libtool
         - automake
         - autoconf
         - pkg-config
         - maven
+        - gcc-multilib
+        - libzmq3
         
 storm|build_dir:
   file.directory:
@@ -25,45 +24,54 @@ storm|build_dir:
     - makedirs: true
     - names:
         - {{ storm.build_dir }}
-
-storm|create_user-{{ storm.user_name }}:
+        - {{ meta['conf_dir'] }}
+        
+storm|create_user-{{ storm.user }}:
   group.present:
-    - name: {{ storm.user_name }}
+    - name: {{ storm.user }}
   user.present:
-    - name: {{ storm.user_name }}
+    - name: {{ storm.user }}
     - fullname: "Apache Storm User"
     - createhome: false
-    - shell: /usr/sbin/nologin
+    - shell: /bin/bash
     - gid_from_name: true
     - groups:
-        - {{ storm.user_name }}
-    - unless: getent passwd {{ storm.user_name }}
+        - {{ storm.user }}
+    - unless: getent passwd {{ storm.user }}
   
 storm|create_directories:
   file.directory:
-    - user: {{ storm.user_name }}
-    - group: {{ storm.user_name }}
+    - user: {{ storm.user }}
+    - group: {{ storm.user }}
     - mode: 755
     - makedirs: true
     - names:
-        - {{ storm.real_home }}
+        - {{ meta['home'] }}
         - {{ storm.log_dir }}
+    - require:
+        - user: storm|create_user-{{ storm.user }}
 
-
+# 
 storm|install_from_source:
   cmd.run:
-    - cwd: {{ storm.real_home }}
-    - name: curl -L '{{ storm.source_url }}' | tar xz
+    - cwd: {{ storm.prefix }}
+    - name: |
+        cd {{ storm.prefix }}
+        curl -L '{{ storm.mirror_url % meta }}' |
+        grep -A1 'site for your download:</p>' |
+        tail -n1 |
+        sed -e 's/<a .*href=['"'"'"]//' -e 's/["'"'"'].*$//' -e 's/<p>//' > /tmp/closest_mirror.txt
+        curl -L `cat /tmp/closest_mirror.txt` | tar xz
     - shell: /bin/bash
     - timeout: 300
-    - unless: test -x {{ storm.real_name }}/bin/storm
+    - unless: test -x {{ meta['bin_dir'] }}/storm
     - require:
         - file: storm|create_directories
 
   alternatives.install:
     - name: storm-home-link
-    - link: {{ storm.alt_home }}
-    - path: {{ storm.real_home }}
+    - link: {{ meta['alt_home'] }}
+    - path: {{ meta['home'] }}
     - priority: 30
     - require:
         - cmd: storm|install_from_source
@@ -77,17 +85,15 @@ storm|update_path:
     - user: root
     - group: root
     - context:
-      storm_bin: {{ storm.real_home }}/bin
+      storm_bin: {{ meta['bin_dir'] }}
 
-# storm|storm_config:
-#   file.managed:
-#     - name: {{ storm.real_home }}/conf/storm.yaml
-#     - source: salt://storm/files/storm.yaml
-#     - template: jinja
-#     - mode: 644
-#     - user: root
-#     - group: root
-#     - context:
-#       storm: {{ storm }}
-#       jvm_options: {{ storm.jvm_options }}
-#       config: {{ storm.config }}
+storm|storm_config:
+  file.managed:
+    - name: {{ meta['conf_dir'] }}/storm.yaml
+    - source: salt://storm/files/storm.yaml
+    - template: jinja
+    - mode: 644
+    - user: root
+    - group: root
+    - context:
+        config: {{ config }}

@@ -1,31 +1,16 @@
-{% import_yaml "storm/defaults.yaml" as defaults %}
+{% from  "storm/defaults.yaml" import rawmap with context %}
+{% set storm = salt['grains.filter_by'](rawmap, grain='os', merge=salt['pillar.get']('storm:lookup'))%}
 
-## ZeroMQ
-{% set zmq = salt['pillar.get']("zmq", default=defaults.zmq, merge=True) %}
-{% do zmq.update({'real_name': zmq.real_name % zmq.version,
-              'source_url': zmq.source_url % {'version': zmq.version}}) %}
-{% do zmq.update({'real_home': "%s/%s" % (zmq.prefix, zmq.real_name),
-                  'alt_home': '%s/%s' % (zmq.prefix, zmq.alt_name)}) %}
+{% set real_name = storm.name % storm.version %}
+{% set real_home = storm.prefix + "/" + real_name %}
 
-## Java ZMQ client
-{% set jzmq = salt['pillar.get']("jzmq", default=defaults.jzmq, merge=True) %}
-{% do jzmq.update({'real_name': jzmq.real_name % jzmq.version,
-               'source_url': jzmq.source_url % {'version': jzmq.version}}) %}
-{% do jzmq.update({'real_home': "%s/%s" % (jzmq.prefix, jzmq.real_name),
-                   'alt_home': '%s/%s' % (jzmq.prefix, jzmq.alt_name)}) %}
-
-## ZMQ dep
-{% set libsodium = salt['pillar.get']("libsodium", default=defaults.libsodium, merge=True) %}
-{% do libsodium.update({'real_name': libsodium.real_name % libsodium.version,
-                        'source_url': libsodium.source_url % {'version': libsodium.version}}) %}
-{% do libsodium.update({'real_home': "%s/%s" % (libsodium.prefix, libsodium.real_name),
-                        'alt_home': "%s/%s" % (libsodium.prefix, libsodium.alt_name)}) %}
-
-## Storm
-{% set storm = salt['pillar.get']("storm", default=defaults.storm, merge=True) %}
-
-{% do storm.update({'real_name': storm.real_name % storm.version,
-                    'source_url': storm.source_url % {'version': storm.version}}) %}
-
-{% do storm.update({'real_home': "%s/%s" % (storm.prefix, storm.real_name),
-                    'alt_home': '%s/%s' % (storm.prefix, storm.alt_name)}) %}
+{% set meta = {} %}
+{% do
+meta.update({"home": real_home,
+  "alt_home": storm.prefix + "/storm",
+  "bin_dir": real_home + "/bin",
+  "conf_dir": storm.config_dir,
+  "source_url": storm.source_url % {"name": real_name, "version": storm.version},
+  "name": real_name,
+  "version": storm.version})
+  %}
