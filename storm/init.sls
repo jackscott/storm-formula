@@ -25,6 +25,7 @@ storm|build_dir:
     - names:
         - {{ storm.build_dir }}
         - {{ meta['conf_dir'] }}
+        - {{ config['storm.local.dir'] }}
         
 storm|create_user-{{ storm.user }}:
   group.present:
@@ -85,15 +86,17 @@ storm|update_path:
     - user: root
     - group: root
     - context:
-      storm_bin: {{ meta['bin_dir'] }}
+        storm_bin: {{ meta['bin_dir'] }}
 
 storm|storm_config:
   file.managed:
     - name: {{ meta['conf_dir'] }}/storm.yaml
-    - source: salt://storm/files/storm.yaml
+    - source: salt://storm/files/storm.conf
     - template: jinja
     - mode: 644
-    - user: root
-    - group: root
+    - user: {{ storm.user }}
+    - group: {{ storm.user }}
     - context:
         config: {{ config }}
+        storm: {{ storm }}
+        

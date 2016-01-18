@@ -4,16 +4,6 @@ include:
   - storm
   - storm.zmq
 
-# storm|nimbus-conf:
-#   file.managed:
-#     - name: {{ meta['conf_dir'] }}/storm.yaml
-#     - source: salt://storm/files/storm.yaml
-#     - user: {{ storm.user }}
-#     - group: {{ storm.user }}
-#     - mode: 644
-#     - require:
-#         - sls: storm
-
 storm|ui-upstart:
   file.managed:
     - name: /etc/init/storm-ui.conf
@@ -24,10 +14,8 @@ storm|ui-upstart:
     - group: root
     - context:
         storm: {{ storm }}
-        meta: {{ meta }}
-    # - require:
-    #     - file: storm|nimbus-conf
-
+        java_home: {{ salt['pillar.get']('java-home') }}
+        real_home: {{ meta['home'] }}
 
 storm|ui-enabled-file:
   file.managed:

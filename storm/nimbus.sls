@@ -3,16 +3,6 @@
 include:
   - storm
 
-storm|nimbus-conf:
-  file.managed:
-    - name: {{ meta['conf_dir'] }}/storm.yaml
-    - source: salt://storm/files/storm.yaml
-    - user: {{ storm.user }}
-    - group: {{ storm.user }}
-    - mode: 644
-    - require:
-        - sls: storm
-
 storm|nimbus-upstart:
   file.managed:
     - name: /etc/init/nimbus.conf
@@ -24,9 +14,6 @@ storm|nimbus-upstart:
     - context:
         storm: {{ storm }}
         meta: {{ meta }}
-    - require:
-        - file: storm|nimbus-conf
-
 
 storm|nimbus-enabled-file:
   file.managed:
@@ -45,4 +32,3 @@ storm|service:
     - watch:
       - file: storm|nimbus-enabled-file
       - file: storm|nimbus-upstart
-      - file: storm|nimbus-conf
