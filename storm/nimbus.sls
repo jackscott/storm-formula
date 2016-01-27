@@ -5,7 +5,7 @@ include:
 
 storm|nimbus-upstart:
   file.managed:
-    - name: /etc/init/nimbus.conf
+    - name: /etc/init/storm-nimbus.conf
     - source: salt://storm/files/nimbus.init.conf
     - template: jinja
     - mode: 644
@@ -17,7 +17,7 @@ storm|nimbus-upstart:
 
 storm|nimbus-enabled-file:
   file.managed:
-    - name: /etc/default/nimbus
+    - name: /etc/default/storm-nimbus
     - mode: 644
     - user: root
     - group: root
@@ -26,7 +26,7 @@ storm|nimbus-enabled-file:
 
 storm|service:
   service.running:
-    - name: nimbus
+    - name: storm-nimbus
     - enable: true
     - init_delay: 10
     - watch:
