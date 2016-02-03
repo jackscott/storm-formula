@@ -54,6 +54,16 @@ storm|create_directories:
     - require:
         - user: storm|create_user-{{ storm.user }}
 
+storm|logging-symlinks:
+  file.symlink:
+    - name: {{ '%s/logs'|format(meta['home']) }}
+    - target: {{ storm.log_dir }}
+    - user: {{ storm.user }}
+    - group: {{ storm.user }}
+    - mode: 775
+    - force: true
+    - require:
+        - file: storm|create_directories
 # 
 storm|install_from_source:
   cmd.run:
