@@ -25,7 +25,7 @@ storm|build_dir:
     - names:
         - {{ storm.build_dir }}
         - {{ meta['conf_dir'] }}
-        - {{ config['storm.local.dir'] }}
+
         
 storm|create_user-{{ storm.user }}:
   group.present:
@@ -49,6 +49,8 @@ storm|create_directories:
     - names:
         - {{ meta['home'] }}
         - {{ storm.log_dir }}
+        - {{ config['storm.local.dir'] }}
+        
     - require:
         - user: storm|create_user-{{ storm.user }}
 
