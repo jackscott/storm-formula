@@ -26,6 +26,7 @@ storm|supervisor-upstart:
         user: {{ storm.user }}
         real_home: {{ meta['home'] }}
         java_home: {{ salt['environ.get']('JAVA_HOME', '/usr/lib/java') }}
+        local_cache: {{ salt['pillar.get']('storm:config:storm.local.dir', '/mnt/storm/storm-local') }}        
     - require:
         - file: storm|supervisor-default-file
 

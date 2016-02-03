@@ -5,8 +5,7 @@
 {% set real_home = storm.prefix + "/" + real_name %}
 
 {% set meta = {} %}
-{% do
-meta.update({"home": real_home,
+{% do meta.update({"home": real_home,
   "alt_home": storm.prefix + "/storm",
   "bin_dir": real_home + "/bin",
   "conf_dir": storm.config_dir,

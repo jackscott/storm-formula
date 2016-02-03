@@ -14,7 +14,8 @@ storm|nimbus-upstart:
     - context:
         storm: {{ storm }}
         meta: {{ meta }}
-
+        java_home: {{ salt['environ.get']('JAVA_HOME', '/usr/lib/java') }}
+        local_cache: {{ salt['pillar.get']('storm:config:storm.local.dir', '/mnt/storm/storm-local') }}        
 storm|nimbus-enabled-file:
   file.managed:
     - name: /etc/default/storm-nimbus
