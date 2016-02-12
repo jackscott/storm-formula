@@ -42,6 +42,7 @@ Ubuntu:
     alt_name: libsodium
 
   config:
+    nimbus.host: localhost
     nimbus.seeds: ["localhost"]
     nimbus.childopts: "-Xmx1024m"
     nimbus.thrift.port: 6627
