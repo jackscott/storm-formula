@@ -100,7 +100,7 @@ storm|update_path:
     - context:
         storm_bin: {{ meta['bin_dir'] }}
 
-storm|storm_config:
+storm|storm-config:
   file.managed:
     - name: {{ meta['conf_dir'] }}/storm.yaml
     - source: salt://storm/files/storm.conf

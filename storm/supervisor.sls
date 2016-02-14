@@ -15,7 +15,7 @@ storm|supervisor-default-file:
 
 storm|supervisor-upstart:
   file.managed:
-    - name: /etc/init/supervisor.conf
+    - name: /etc/init/storm-supervisor.conf
     - source: salt://storm/files/supervisor.init.conf
     - user: root
     - group: root
@@ -25,12 +25,9 @@ storm|supervisor-upstart:
         user: {{ storm.user }}
         real_home: {{ meta['home'] }}
         java_home: {{ salt['environ.get']('JAVA_HOME', '/usr/lib/java') }}
-        local_cache: {{ salt['pillar.get']('storm:config:storm.local.dir', '/mnt/storm/storm-local') }}        
+        local_cache: {{ salt['pillar.get']('storm:config:storm.local.dir', '/tmp/storm-local') }} 
     - require:
         - file: storm|supervisor-default-file
-
-
-storm|supervisor-service:
   service.running:
     - name: storm-supervisor
     - enable: true
@@ -38,5 +35,32 @@ storm|supervisor-service:
     - watch:
       - file: storm|supervisor-upstart
       - file: storm|supervisor-default-file
+      - file: storm|storm-config
+        
     - require:
         - file: storm|supervisor-upstart
+
+storm|logviewer-upstart:
+  file.managed:
+    - name: /etc/init/storm-logviewer.conf
+    - source: salt://storm/files/logviewer.init.conf
+    - user: root
+    - group: root
+    - mode: 0644
+    - template: jinja
+    - context:
+        user: {{ storm.user }}
+        real_home: {{ meta['home'] }}
+        java_home: {{ salt['environ.get']('JAVA_HOME', '/usr/lib/java') }}
+        local_cache: {{ salt['pillar.get']('storm:config:storm.local.dir', '/tmp/storm-local') }}
+    - require:
+        - file: storm|supervisor-default-file
+        - file: storm|supervisor-upstart
+  service.running:
+    - name: storm-logviewer
+    - enable: true
+    - init_delay: 10
+    - watch:
+        - file: storm|logviewer-upstart
+        - file: storm|supervisor-default-file
+        - file: storm|storm-config
