@@ -1,7 +1,6 @@
 {% from "storm/map.jinja" import storm, meta with context %}
-
 {%- from "storm/defaults.yaml" import rawmap with context -%}
-{%- set config = salt['pillar.get']("storm:config", default=rawmap.config, merge=True) -%}
+{%- set config = storm.config %}
 {%- set zk_hosts = salt['mine.get']('roles:zookeeper', 'network.ip_addrs', expr_form='grain').values() %}
 
 storm|install_deps:
@@ -47,7 +46,6 @@ storm|create_directories:
     - group: {{ storm.user }}
     - mode: 755
     - makedirs: true
-    - order: 10
     - names:
         - {{ meta['home'] }}
         - {{ storm.log_dir }}

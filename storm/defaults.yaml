@@ -48,7 +48,7 @@ Ubuntu:
     ui.port: 8080
     ui.childopts: "-Xmx1024m"
 
-    storm.local.dir: "storm-local"
+    storm.local.dir: "/tmp/storm-local"
     storm.zookeeper.servers: []
     storm.zookeeper.port: 2181
     storm.zookeeper.root: "/storm"

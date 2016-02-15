@@ -2,7 +2,6 @@
 
 include:
   - storm
-  - storm.zmq
 
 storm|ui-upstart:
   file.managed:
