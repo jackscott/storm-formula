@@ -2,6 +2,7 @@
 
 {%- from "storm/defaults.yaml" import rawmap with context -%}
 {%- set config = salt['pillar.get']("storm:config", default=rawmap.config, merge=True) -%}
+{%- set zk_hosts = salt['mine.get']('roles:zookeeper', 'network.ip_addrs', expr_form='grain').values() %}
 
 storm|install_deps:
   pkg:
@@ -46,11 +47,11 @@ storm|create_directories:
     - group: {{ storm.user }}
     - mode: 755
     - makedirs: true
+    - order: 10
     - names:
         - {{ meta['home'] }}
         - {{ storm.log_dir }}
         - {{ config['storm.local.dir'] }}
-        
     - require:
         - user: storm|create_user-{{ storm.user }}
 
@@ -111,4 +112,5 @@ storm|storm-config:
     - context:
         config: {{ config }}
         storm: {{ storm }}
+        zk_hosts: {{ zk_hosts }}
         

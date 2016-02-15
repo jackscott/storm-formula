@@ -16,34 +16,30 @@ Ubuntu:
   source_url: "http://mirror.cogentco.com/pub/apache/storm/%(name)s/%(name)s.tar.gz"
   source_hash: "http://www.us.apache.org/dist/storm/%(name)s/%(name)s.tar.gz.md5"
 
-  # used for reflection?
-  dependencies: [zmq, jzmq, libsodium]
-
-  zmq:
-    name: "zeromq-%s"
-    version: 3.2.5
-    prefix: /usr/local
-    source_url: "http://download.zeromq.org/zeromq-%(version)s.tar.gz"
-
-    alt_name: zeromq
+  dependencies:
+    zmq:
+      name: "zeromq-%s"
+      version: 3.2.5
+      prefix: /usr/local
+      source_url: "http://download.zeromq.org/zeromq-%(version)s.tar.gz"
+      alt_name: zeromq
+      
+    jzmq:
+      name: "jzmq-%s"
+      version: 3.1.0
+      prefix: /usr/local
+      source_url: "https://github.com/zeromq/jzmq/archive/v%(version)s.tar.gz"
+      alt_name: jzmq
     
-  jzmq:
-    name: "jzmq-%s"
-    version: 3.1.0
-    prefix: /usr/local
-    source_url: "https://github.com/zeromq/jzmq/archive/v%(version)s.tar.gz"
-    alt_name: jzmq
-    
-  libsodium:
-    name: "libsodium-%s"
-    version: 1.0.7
-    prefix: /usr/local
-    source_url: "https://download.libsodium.org/libsodium/releases/libsodium-%(version)s.tar.gz"
-    alt_name: libsodium
+    libsodium:
+      name: "libsodium-%s"
+      version: 1.0.7
+      prefix: /usr/local
+      source_url: "https://download.libsodium.org/libsodium/releases/libsodium-%(version)s.tar.gz"
+      alt_name: libsodium
 
   config:
-    nimbus.host: localhost
-    nimbus.seeds: ["localhost"]
+    nimbus.host: "localhost"
     nimbus.childopts: "-Xmx1024m"
     nimbus.thrift.port: 6627
     nimbus.thrift.threads: 64
@@ -52,15 +48,33 @@ Ubuntu:
     ui.port: 8080
     ui.childopts: "-Xmx1024m"
 
-      
     storm.local.dir: "storm-local"
     storm.zookeeper.servers: []
     storm.zookeeper.port: 2181
     storm.zookeeper.root: "/storm"
-
     drpc.port: 3772
       
     worker.threads: 64
     transactional.zookeeper.root: "/transactional"
     
+    worker.childopts: >-
+      "-Xmx2600m
+      -Xms2600m
+      -Xss256k
+      -XX:MaxPermSize=128m
+      -XX:PermSize=96m
+      -XX:NewSize=1000m
+      -XX:MaxNewSize=1000m
+      -XX:MaxTenuringThreshold=1
+      -XX:SurvivorRatio=6
+      -XX:+PrintGCDetails
+      -Xloggc:artifacts/gc.log
+      -XX:+PrintGCDateStamps
+      -XX:+PrintGCTimeStamps
+      -XX:+UseGCLogFileRotation
+      -XX:NumberOfGCLogFiles=10
+      -XX:GCLogFileSize=1M
+      -XX:+HeapDumpOnOutOfMemoryError
+      -XX:HeapDumpPath=artifacts/heapdump"
+
 {% endload %}
