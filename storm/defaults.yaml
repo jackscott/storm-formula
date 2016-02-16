@@ -49,7 +49,6 @@ Ubuntu:
     ui.childopts: "-Xmx1024m"
 
     storm.local.dir: "/tmp/storm-local"
-    storm.zookeeper.servers: []
     storm.zookeeper.port: 2181
     storm.zookeeper.root: "/storm"
     drpc.port: 3772

@@ -1,17 +1,7 @@
-{%- from "storm/map.jinja" import config, storm, meta with context %}
-
+{%- from "storm/map.jinja" import  storm, meta, config with context %}
+{%- from "storm/defaults.yaml" import rawmap with context %}
 {%- set zk_hosts = salt['mine.get']('roles:zookeeper', 'network.ip_addrs', expr_form='grain').keys() %}
 
-storm|grains:
-  grains.present:
-    - name: storm:config
-    - value:
-        storm.zookeeper.servers: [{{ zk_hosts|join(',') }}]
-        storm.local.dir: {{ config['storm.local.dir'] }}
-        storm.log.dir: {{ salt['pillar.get']('storm:log_dir') }}
-        nimbus.host: {{ config['nimbus.host'] }}
-    - order: 30
-    - force: true
 
 
 storm|install_deps:
@@ -110,6 +100,7 @@ storm|update_path:
     - context:
         storm_bin: {{ meta['bin_dir'] }}
 
+
 storm|storm-config:
   file.managed:
     - name: {{ meta['conf_dir'] }}/storm.yaml
@@ -118,8 +109,7 @@ storm|storm-config:
     - mode: 644
     - user: {{ storm.user }}
     - group: {{ storm.user }}
-    - require:
-        - grains: storm|grains
     - context:
         storm: {{ storm }}
         config: {{ config }}
+        zk_hosts: {{ zk_hosts }}
