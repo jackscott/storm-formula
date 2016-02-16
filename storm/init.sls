@@ -1,17 +1,17 @@
-{%- from "storm/map.jinja" import config, storm with context %}
+{%- from "storm/map.jinja" import config, storm, meta with context %}
 
-{%- set zk_hosts = salt['mine.get']('roles:zookeeper', 'network.ip_addrs', expr_form='grain').values() %}
+{%- set zk_hosts = salt['mine.get']('roles:zookeeper', 'network.ip_addrs', expr_form='grain').keys() %}
 
 storm|grains:
   grains.present:
     - name: storm:config
     - value:
-        - storm.zookeeper.servers: [{{ zk_hosts|join(',') }}]
-        - storm.local.dir: {{ storm.local.dir }}
-        - storm.log.dir: {{ salt['pillar.get']('storm:log_dir') }}
-        - nimbus.host: {{ storm.nimbus.host }}
-        - storm.zookeeper.servers: [{{ zk_hosts|join(',') }}]
+        storm.zookeeper.servers: [{{ zk_hosts|join(',') }}]
+        storm.local.dir: {{ config['storm.local.dir'] }}
+        storm.log.dir: {{ salt['pillar.get']('storm:log_dir') }}
+        nimbus.host: {{ config['nimbus.host'] }}
     - order: 30
+    - force: true
 
 
 storm|install_deps:
@@ -35,7 +35,7 @@ storm|build_dir:
     - makedirs: true
     - names:
         - {{ storm.build_dir }}
-        - {{ meta['conf_dir'] }}
+        - {{ storm.config_dir }}
 
         
 storm|create_user-{{ storm.user }}:
@@ -119,7 +119,7 @@ storm|storm-config:
     - user: {{ storm.user }}
     - group: {{ storm.user }}
     - require:
-        - grain: storm|grains
+        - grains: storm|grains
     - context:
         storm: {{ storm }}
         config: {{ config }}
