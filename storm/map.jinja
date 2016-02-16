@@ -13,3 +13,6 @@
   "name": real_name,
   "version": storm.version})
   %}
+
+{% set config = {} %}
+{% do config.update(storm.config) %}
