@@ -110,6 +110,4 @@ storm|storm-config:
     - user: {{ storm.user }}
     - group: {{ storm.user }}
     - context:
-        storm: {{ storm }}
-        config: {{ config }}
         zk_hosts: {{ zk_hosts }}

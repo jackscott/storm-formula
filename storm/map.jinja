@@ -14,5 +14,4 @@
   "version": storm.version})
   %}
 
-{% set config = salt['pillar.get']('storm:config', salt['grains.get']('storm:config', rawmap.config), merge=True) %}
-
+{% set config = salt['pillar.get']('storm:config', rawmap.config, merge=True) %}
