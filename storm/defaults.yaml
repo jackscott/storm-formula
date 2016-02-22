@@ -39,41 +39,48 @@ Ubuntu:
       alt_name: libsodium
 
   config:
-    nimbus.host: "localhost"
-    nimbus.childopts: "-Xmx1024m"
-    nimbus.thrift.port: 6627
-    nimbus.thrift.threads: 64
+    nimbus:
+      host: "localhost"
+      childopts: "-Xmx1024m"
+      thrift.port: 6627
+      thrift.threads: 64
     
-    ui.host: 0.0.0.0
-    ui.port: 8080
-    ui.childopts: "-Xmx1024m"
+    ui:
+      host: 0.0.0.0
+      port: 8080
+      childopts: "-Xmx1024m"
 
-    storm.local.dir: "/tmp/storm-local"
-    storm.zookeeper.port: 2181
-    storm.zookeeper.root: "/storm"
-    drpc.port: 3772
+    storm:
+      local.dir: "/tmp/storm-local"
+      zookeeper.port: 2181
+      zookeeper.root: "/storm"
       
-    worker.threads: 64
-    transactional.zookeeper.root: "/transactional"
-    
-    worker.childopts: >-
-      "-Xmx2600m
-      -Xms2600m
-      -Xss256k
-      -XX:MaxPermSize=128m
-      -XX:PermSize=96m
-      -XX:NewSize=1000m
-      -XX:MaxNewSize=1000m
-      -XX:MaxTenuringThreshold=1
-      -XX:SurvivorRatio=6
-      -XX:+PrintGCDetails
-      -Xloggc:artifacts/gc.log
-      -XX:+PrintGCDateStamps
-      -XX:+PrintGCTimeStamps
-      -XX:+UseGCLogFileRotation
-      -XX:NumberOfGCLogFiles=10
-      -XX:GCLogFileSize=1M
-      -XX:+HeapDumpOnOutOfMemoryError
-      -XX:HeapDumpPath=artifacts/heapdump"
+    drpc:
+      port: 3772
+      
+    worker:
+      threads: 64
+      childopts: >-
+        "-Xmx2600m
+        -Xms2600m
+        -Xss256k
+        -XX:MaxPermSize=128m
+        -XX:PermSize=96m
+        -XX:NewSize=1000m
+        -XX:MaxNewSize=1000m
+        -XX:MaxTenuringThreshold=1
+        -XX:SurvivorRatio=6
+        -XX:+PrintGCDetails
+        -Xloggc:artifacts/gc.log
+        -XX:+PrintGCDateStamps
+        -XX:+PrintGCTimeStamps
+        -XX:+UseGCLogFileRotation
+        -XX:NumberOfGCLogFiles=10
+        -XX:GCLogFileSize=1M
+        -XX:+HeapDumpOnOutOfMemoryError
+        -XX:HeapDumpPath=artifacts/heapdump"
 
+    transactional:
+      zookeeper.root: "/transactional"
+    
 {% endload %}
