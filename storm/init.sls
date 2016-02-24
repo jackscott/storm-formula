@@ -1,8 +1,5 @@
 {%- from "storm/map.jinja" import  storm, meta, config with context %}
-{%- from "storm/defaults.yaml" import rawmap with context %}
 {%- set zk_hosts = salt['mine.get']('roles:zookeeper', 'network.ip_addrs', expr_form='grain').keys() %}
-
-
 
 storm|install_deps:
   pkg:
@@ -40,7 +37,7 @@ storm|create_user-{{ storm.user }}:
     - groups:
         - {{ storm.user }}
     - unless: getent passwd {{ storm.user }}
-  
+
 storm|create_directories:
   file.directory:
     - user: {{ storm.user }}
@@ -50,7 +47,7 @@ storm|create_directories:
     - names:
         - {{ meta['home'] }}
         - {{ storm.log_dir }}
-        - {{ storm.config['storm.local.dir'] }}
+        - {{ storm.config.storm['local.dir'] }}
     - require:
         - user: storm|create_user-{{ storm.user }}
 
@@ -98,8 +95,7 @@ storm|update_path:
     - user: root
     - group: root
     - context:
-        storm_bin: {{ meta['bin_dir'] }}
-
+        local_cache: {{ config.storm['local.dir'] }}
 
 storm|storm-config:
   file.managed:

@@ -15,7 +15,7 @@ storm|ui-upstart:
         storm: {{ storm }}
         java_home: {{ salt['environ.get']('JAVA_HOME', '/usr/lib/java') }}        
         real_home: {{ meta['home'] }}
-        local_cache: {{ salt['pillar.get']('storm:config:storm:local:dir', '/tmp/storm-local') }}
+        local_cache: {{ salt['pillar.get']('storm:config:storm:local.dir', '/tmp/storm-local') }}
 
 storm|ui-enabled-file:
   file.managed:

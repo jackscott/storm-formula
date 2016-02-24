@@ -16,6 +16,23 @@ Ubuntu:
   source_url: "http://mirror.cogentco.com/pub/apache/storm/%(name)s/%(name)s.tar.gz"
   source_hash: "http://www.us.apache.org/dist/storm/%(name)s/%(name)s.tar.gz.md5"
 
+  services:
+    drpc:
+      name: storm-drpc
+      enabled: true
+    supervisor:
+      name: storm-supervisor
+      enabled: true
+    ui:
+      name: storm-ui
+      enabled: true
+    nimbus:
+      name: storm-nimbus
+      enabled: true
+    logviewer:
+      name: storm-logviewer
+      enabled: true
+    
   dependencies:
     zmq:
       name: "zeromq-%s"

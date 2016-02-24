@@ -1,6 +1,7 @@
 {% from  "storm/defaults.yaml" import rawmap with context %}
 {% set storm = salt['grains.filter_by'](rawmap, grain='os', merge=salt['pillar.get']('storm:lookup'))%}
 
+{% set java_home =  salt['grains.get']('java_home', salt['pillar.get']('java_home', '/usr/lib/java')) %}
 {% set real_name = storm.name % storm.version %}
 {% set real_home = storm.prefix + "/" + real_name %}
 
@@ -9,8 +10,11 @@
   "alt_home": storm.prefix + "/storm",
   "bin_dir": real_home + "/bin",
   "conf_dir": storm.config_dir,
+  "log_dir": storm.log_dir,
+  "java_home": java_home,
   "source_url": storm.source_url % {"name": real_name, "version": storm.version},
   "name": real_name,
+  "user": storm.user,
   "version": storm.version})
   %}
 
