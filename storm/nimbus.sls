@@ -12,22 +12,22 @@ storm|nimbus-enabled-file:
     - user: root
     - group: root
     - order: 10
+    - template: jinja
     - context:
         enabled: {{ service['enabled'] }}
-  
+        service: {{ service['name'] }}
+        
 storm|nimbus-upstart:
   file.managed:
     - name: /etc/init/{{ service['name'] }}.conf
-    - source: salt://storm/files/nimbus.init.conf
+    - source: salt://storm/files/upstart.init.conf
     - template: jinja
     - mode: 644
     - user: root
     - group: root
     - context:
-        storm: {{ storm }}
-        meta: {{ meta }}
-        java_home: {{ meta.java_home }}
-        local_cache: {{ salt['pillar.get']('storm:config:storm:local.dir', '/mnt/storm/storm-local') }}
+        service: {{ service['name'] }}
+        command: nimbus
         
   service.running:
     - name: {{ service['name'] }}

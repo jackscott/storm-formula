@@ -1,17 +1,19 @@
 {% from "storm/map.jinja" import storm, meta with context %}
 {%- set java_home = salt['environ.get']('JAVA_HOME', '/usr/lib/java') %}
 {%- set local_dir =  salt['pillar.get']('storm:config:storm:local.dir', '/tmp/storm-local') %} 
-{%- with service = storm.services.supervisor %}
 
 include:
   - storm
 
+
+{%- with service = storm.services.supervisor %}
 storm|supervisor-default-file:
   file.managed:
     - name: /etc/default/{{ service['name'] }}
     - source: salt://storm/files/etc_default.conf
     - template: jinja
     - context:
+        service: {{ service['name'] }}
         enabled: {{ service['enabled'] }}
     - user: root
     - group: root
@@ -20,13 +22,14 @@ storm|supervisor-default-file:
 storm|supervisor-upstart:
   file.managed:
     - name: /etc/init/{{ service['name'] }}.conf
-    - source: salt://storm/files/supervisor.init.conf
+    - source: salt://storm/files/upstart.init.conf
     - user: root
     - group: root
     - mode: 0644
     - template: jinja
     - context:
-        local_cache: {{ local_dir }}
+        service: {{ service['name'] }}
+        command: supervisor
     - require:
         - file: storm|supervisor-default-file
   service.running:
@@ -108,12 +111,9 @@ storm|drpc-upstart:
     - template: jinja
     - context:
         service: {{ service['name'] }}
-        local_cache: {{ local_dir }}
         command: drpc
-        
     - require:
         - file: storm|drpc-default-file
-        - file: storm|drpc-upstart
   service.running:
     - name: {{ service['name'] }}
     - enable: {{ service['enabled'] }}

@@ -3,34 +3,39 @@
 include:
   - storm
 
-storm|ui-upstart:
+{% with service = storm.services.ui %}
+
+storm|/etc/default/{{ service['name'] }}:
   file.managed:
-    - name: /etc/init/storm-ui.conf
-    - source: salt://storm/files/ui.init.conf
+    - name: /etc/default/{{ service['name'] }}
+    - source: salt://storm/files/etc_default.conf
+    - mode: 644
+    - user: root
+    - group: root
+    - order: 10
+    - template: jinja
+    - context:
+        enabled: {{ service['enabled'] }}
+        service: {{ service['name'] }}
+
+        
+storm|{{ service['name'] }}-upstart:
+  file.managed:
+    - name: /etc/init/{{ service['name'] }}.conf
+    - source: salt://storm/files/upstart.init.conf
     - template: jinja
     - mode: 644
     - user: root
     - group: root
     - context:
-        storm: {{ storm }}
-        java_home: {{ salt['environ.get']('JAVA_HOME', '/usr/lib/java') }}        
-        real_home: {{ meta['home'] }}
-        local_cache: {{ salt['pillar.get']('storm:config:storm:local.dir', '/tmp/storm-local') }}
-
-storm|ui-enabled-file:
-  file.managed:
-    - name: /etc/default/storm_ui
-    - mode: 644
-    - user: root
-    - group: root
-    - contents: |
-        ENABLE="yes"
-
-storm|ui-service:
+        service: {{ service['name'] }}
+        command: ui
+        
   service.running:
     - name: storm-ui
     - enable: true
     - init_delay: 10
     - watch:
-      - file: storm|ui-enabled-file
-      - file: storm|ui-upstart
+      - file: storm|/etc/default/{{ service['name'] }}
+      - file: storm|{{ service['name'] }}-upstart
+{% endwith %}

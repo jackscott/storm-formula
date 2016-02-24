@@ -5,12 +5,15 @@
 {% set real_name = storm.name % storm.version %}
 {% set real_home = storm.prefix + "/" + real_name %}
 
+{% set config = salt['pillar.get']('storm:config', rawmap.config, merge=True) %}
+
 {% set meta = {} %}
 {% do meta.update({"home": real_home,
   "alt_home": storm.prefix + "/storm",
   "bin_dir": real_home + "/bin",
   "conf_dir": storm.config_dir,
   "log_dir": storm.log_dir,
+  "local_dir": config.storm['local.dir'],
   "java_home": java_home,
   "source_url": storm.source_url % {"name": real_name, "version": storm.version},
   "name": real_name,
@@ -18,4 +21,4 @@
   "version": storm.version})
   %}
 
-{% set config = salt['pillar.get']('storm:config', rawmap.config, merge=True) %}
+
