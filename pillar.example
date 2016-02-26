@@ -1,41 +1,50 @@
+# You can override anthing under config from a grain,
+# see defaults.yaml for list of options
+
+
+kafka:
+  user: root
+  config:
+    log:
+      dir: '/mnt/kafka-logs'
+
+zookeeper:
+  config:
+    data_dir: '/mnt/zookeeper'
+    
 storm:
-  version: 0.10.0
-  zmq_version: 4.1.3
+  lookup:
+    prefix: '/usr/local'
+
+    # This will setup supervisors on ports 670[0-3]
+    supervisor_start_port: 6700
+    supervisor_slots: 4
+    
+    log_dir: "/mnt/storm/logs"
+    version: 0.10.0
 
 
-# These settings map 1+1 to the settings in storm/config.yml
-# there are some special cases, like `storm.supervisor.num_slots`
-# which will convert a number to a list of ports behind the scenes
-storm.nimbus:
-  seeds: ["localhost"]
-  childopts: "-Xmx768m"
-  thrift:
-    port: 6627
-    threads: 64
-    max_buffer_size: 1048576
+  config:
+    # we iterate over the keys under here and generate storm.yaml. 
+    # The "section" keys are prepended to each of the hash items below
+    # logging will happen in /mnt/storm/logs because storm.yaml will
+    # have `storm.log.dir: "/mnt/storm/logs"` set and the state will make
+    # sure that dir is created and writeable.
+    storm:
+      local.dir: "/mnt/storm/storm-local"
+      log.dir: "/mnt/storm/logs"
+      zookeeper.port: 2181
+      zookeeper.connection.timeout: 300000
+      zookeeper.session.timeout: 300000
+      zookeeper.retry.times: 10
+      zookeeper.retry.interval: 1000
+      zookeeper.retry.intervalceiling.millis: 30000
+      
+    nimbus:
+      host: 'nimbus.mydomain.com'
 
-  supervisor.timeout.secs: 60
-
-
-storm.ui:
-  host: 0.0.0.0
-  port: 8080
-  childopts: "-Xmx768m"
-
-
-storm.supervisor:
-  num_slots: 3
-  childopts: "-Xmx256m"
-
-
-storm.drpc:
-  port: 3772
-  worker.threads: 64
-  max_buffer_size: 1048576
-  queue.size: 128
-  invocations.port: 3773
-  invocations.threads: 64
-  request.timeout.secs: 600
-  childopts: "-Xmx768m"
-  
-  
+    # Timeout band-aids in testing
+    topology:
+      receiver.buffer.size: 2
+      acker.executors: 1
+    
