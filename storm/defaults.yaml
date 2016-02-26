@@ -3,7 +3,6 @@ Ubuntu:
   user: storm
   prefix: /usr/local
   config_dir: /etc/storm
-  log_dir: /var/log/storm
   build_dir: /usr/local/src
 
   supervisor_slots: 4

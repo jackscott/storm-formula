@@ -14,15 +14,13 @@ zookeeper:
     
 storm:
   lookup:
+    # This will install storm into `/usr/local/storm-0.10.0`
+    version: 0.10.0
     prefix: '/usr/local'
 
     # This will setup supervisors on ports 670[0-3]
     supervisor_start_port: 6700
     supervisor_slots: 4
-    
-    log_dir: "/mnt/storm/logs"
-    version: 0.10.0
-
 
   config:
     # we iterate over the keys under here and generate storm.yaml. 

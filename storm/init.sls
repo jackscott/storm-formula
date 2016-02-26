@@ -46,15 +46,15 @@ storm|create_directories:
     - makedirs: true
     - names:
         - {{ meta['home'] }}
-        - {{ storm.log_dir }}
-        - {{ storm.config.storm['local.dir'] }}
+        - {{ config.storm['log.dir'] }}
+        - {{ config.storm['local.dir'] }}
     - require:
         - user: storm|create_user-{{ storm.user }}
 
 storm|logging-symlinks:
   file.symlink:
     - name: {{ '%s/logs'|format(meta['home']) }}
-    - target: {{ storm.log_dir }}
+    - target: {{ config.storm['log.dir'] }}
     - user: {{ storm.user }}
     - group: {{ storm.user }}
     - mode: 775
