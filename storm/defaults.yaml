@@ -33,28 +33,6 @@ Ubuntu:
       name: storm-logviewer
       enabled: true
     
-  dependencies:
-    zmq:
-      name: "zeromq-%s"
-      version: 3.2.5
-      prefix: /usr/local
-      source_url: "http://download.zeromq.org/zeromq-%(version)s.tar.gz"
-      alt_name: zeromq
-      
-    jzmq:
-      name: "jzmq-%s"
-      version: 3.1.0
-      prefix: /usr/local
-      source_url: "https://github.com/zeromq/jzmq/archive/v%(version)s.tar.gz"
-      alt_name: jzmq
-    
-    libsodium:
-      name: "libsodium-%s"
-      version: 1.0.7
-      prefix: /usr/local
-      source_url: "https://download.libsodium.org/libsodium/releases/libsodium-%(version)s.tar.gz"
-      alt_name: libsodium
-
   config:
     nimbus:
       host: "localhost"
