@@ -16,6 +16,7 @@ Minion Configuration
 
 *Pro Tip*: Storm requires Java 7 but you can (and should) use Java 8.  I use the `sun-java <https://github.com/saltstack-formulas/sun-java-formula>`_ formula, it's pretty sweet you should check it out.
 
+---
 
 **Storm** is a big fan of **ZK** and needs to know all about it in `storm.yaml`. This formula makes a big assumption that you're using `roles` to describe your minions and does this
 
