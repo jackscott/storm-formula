@@ -1,4 +1,5 @@
 {% load_yaml as rawmap %}
+# To override any keys under the OS, set them under `storm:lookup` in a pillar
 Ubuntu:
   user: storm
   prefix: /usr/local
@@ -32,49 +33,55 @@ Ubuntu:
       name: storm-logviewer
       enabled: true
     
-  config:
-    nimbus:
-      host: "localhost"
-      childopts: "-Xmx1024m"
-      thrift.port: 6627
-      thrift.threads: 64
-    
-    ui:
-      host: 0.0.0.0
-      port: 8080
-      childopts: "-Xmx1024m"
+{% endload %}
 
-    storm:
-      local.dir: "/tmp/storm-local"
-      zookeeper.port: 2181
-      zookeeper.root: "/storm"
-      
-    drpc:
-      port: 3772
-      
-    worker:
-      threads: 64
-      childopts: >-
-        "-Xmx2600m
-        -Xms2600m
-        -Xss256k
-        -XX:MaxPermSize=128m
-        -XX:PermSize=96m
-        -XX:NewSize=1000m
-        -XX:MaxNewSize=1000m
-        -XX:MaxTenuringThreshold=1
-        -XX:SurvivorRatio=6
-        -XX:+PrintGCDetails
-        -Xloggc:artifacts/gc.log
-        -XX:+PrintGCDateStamps
-        -XX:+PrintGCTimeStamps
-        -XX:+UseGCLogFileRotation
-        -XX:NumberOfGCLogFiles=10
-        -XX:GCLogFileSize=1M
-        -XX:+HeapDumpOnOutOfMemoryError
-        -XX:HeapDumpPath=artifacts/heapdump"
-
-    transactional:
-      zookeeper.root: "/transactional"
+{% load_yaml as config %}
+# To override these values set them under `storm:config` in a pillar
+# Formatting of these values is important! The structures here are flattened and used
+# directly in `storm.yaml`. If you set weird things under the `storm:config` prefix, you
+# may run into issues getting storm to start properly.  Anything that isnt in the config
+# but needs to be accessed should go under the `storm:lookup` section outlined above.
+nimbus:
+  host: "localhost"
+  childopts: "-Xmx1024m"
+  thrift.port: 6627
+  thrift.threads: 64
     
+ui:
+  host: 0.0.0.0
+  port: 8080
+  childopts: "-Xmx1024m"
+
+storm:
+  local.dir: "/tmp/storm-local"
+  zookeeper.port: 2181
+  zookeeper.root: "/storm"
+      
+drpc:
+  port: 3772
+  
+worker:
+  threads: 64
+  childopts: >-
+    "-Xmx2600m
+    -Xms2600m
+    -Xss256k
+    -XX:MaxPermSize=128m
+    -XX:PermSize=96m
+    -XX:NewSize=1000m
+    -XX:MaxNewSize=1000m
+    -XX:MaxTenuringThreshold=1
+    -XX:SurvivorRatio=6
+    -XX:+PrintGCDetails
+    -Xloggc:artifacts/gc.log
+    -XX:+PrintGCDateStamps
+    -XX:+PrintGCTimeStamps
+    -XX:+UseGCLogFileRotation
+    -XX:NumberOfGCLogFiles=10
+    -XX:GCLogFileSize=1M
+    -XX:+HeapDumpOnOutOfMemoryError
+    -XX:HeapDumpPath=artifacts/heapdump"
+
+transactional:
+  zookeeper.root: "/transactional"
 {% endload %}
