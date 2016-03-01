@@ -1,12 +1,13 @@
-{% import_yaml "storm/defaults.yaml" as defaults %}
+{% from "storm/defaults.yaml" import rawmap, config with context %}
 
-{% set storm = salt['grains.filter_by'](defaults.rawmap, grain='os', merge=salt['pillar.get']('storm:lookup'))%}
+{% set storm = salt['grains.filter_by'](rawmap, grain='os', merge=salt['pillar.get']('storm:lookup'))%}
 
 {% set java_home =  salt['grains.get']('java_home', salt['pillar.get']('java_home', '/usr/lib/java')) %}
 {% set real_name = storm.name % storm.version %}
 {% set real_home = storm.prefix + "/" + real_name %}
 
-{% set config = salt['pillar.get']('storm:config', defaults.config, merge=True) %}
+{% set config = salt['pillar.get']('storm:config', config, merge=True) %}
+{% do storm.update({'config': config}) %}
 
 {% set meta = {} %}
 {% do meta.update({"home": real_home,
