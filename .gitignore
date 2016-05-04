@@ -1,0 +1,8 @@
+*~
+*.py[co]
+.vagrant/*
+.kitchen/
+*.swp
+*.swo
+.ruby-version
+

@@ -1,0 +1,29 @@
+---
+driver:
+  name: vagrant
+  network:
+    - ["private_network", { ip: "10.10.0.155"}]
+
+provisioner:
+  name: salt_solo
+  formula: storm
+  pillars-from-files:
+    storm.sls: pillar.example
+  pillars:
+    top.sls:
+      base:
+        "*":
+          - storm
+  state_top:
+    base:
+      "*":
+        - storm
+        - storm.nimbus
+        - storm.ui
+        - storm.supervisor
+
+platforms:
+  - name: ubuntu-14.04
+
+suites:
+  - name: default

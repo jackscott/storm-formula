@@ -13,7 +13,8 @@ storm|install_deps:
         - maven
         - gcc-multilib
         - libzmq3
-        
+        - curl
+        - wget
 storm|build_dir:
   file.directory:
     - user: root
